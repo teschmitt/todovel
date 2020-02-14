@@ -15,6 +15,15 @@
                         @endif
                         <h1>{{ $task->title }}</h1>
                         <p>{{ $task->description }}</p>
+                        <p>User: {{ $user->name }}</p>
+                        <p>Status:
+                            @if($task->done)
+                                Done!
+                            @else
+                                Unfinished
+                            @endif
+                        </p>
+                        <p>Added: {{ $task->created_at->diffForHumans() }}</p>
                     </div>
                 </div>
             </div>

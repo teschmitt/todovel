@@ -9,4 +9,9 @@ class Task extends Model
 {
     use SoftDeletes;
     protected $table = 'tasks';
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

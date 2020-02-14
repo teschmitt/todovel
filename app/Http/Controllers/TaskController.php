@@ -48,7 +48,13 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        return view('tasks.show', ['task' => Task::findOrFail($id)]);
+        // this will actually spawn two DB queries, which is not optimal.
+        // better would be a single statement to get all the data at once and let
+        // the DB handle the rest, e.g.:
+        // Task::findOrFail($id)->join('users', 'users.id', '=', 'tasks.user_id')->first();
+        $t = Task::findOrFail($id);
+        $u = $t->user;
+        return view('tasks.show', ['task' => $t, 'user' => $u]);
         // dd(Task::find($id));
     }
 
