@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Task;
+
 class TaskController extends Controller
 {
     /**
@@ -13,7 +15,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        dd(\App\Task::all());
+        return view('tasks.index', ['tasks' => Task::all()]);
+        //dd(Task::all());
     }
 
     /**
@@ -45,7 +48,8 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        dd(\App\Task::find($id));
+        return view('tasks.show', ['task' => Task::find($id)]);
+        // dd(Task::find($id));
     }
 
     /**
