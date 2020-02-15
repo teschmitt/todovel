@@ -13,10 +13,18 @@
                                 {{ session('status') }}
                             </div>
                         @endif
+                            <p><a href="{{ route('tasks.create') }}">+ Add task</a></p>
                             <ul>
                                 @forelse($tasks as $t)
                                     <li>
                                         <a href="{{ route('tasks.show', ['task' => $t->id]) }}">{{ $t->title }}</a>
+                                        (<a href="{{ route('tasks.edit', ['task' => $t->id]) }}">Edit</a> |
+                                        <form method="POST"
+                                              action="{{ route('tasks.destroy', ['task' => $t->id]) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit">Delete</button>
+                                        </form>)
                                     </li>
                                 @empty
                                     <li>There is nothing here yet!</li>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Requests\StoreTask;
 use App\Task;
 
 class TaskController extends Controller
@@ -26,7 +27,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        return view('tasks.create');
     }
 
     /**
@@ -35,9 +36,17 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTask $request)
     {
-        //
+        $task = new Task();
+        $task->title = $request->input('title', 'Task title');
+        $task->description = $request->input('description', 'Task description');
+        $task->user_id = $request->user()->id;
+        $task->save();
+
+        $request->session()->flash('status', 'New task created, good luck Chuck!');
+
+        return redirect()->route('tasks.show', ['task' => $task->id]);
     }
 
     /**
@@ -48,7 +57,13 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        return view('tasks.show', ['task' => Task::findOrFail($id)]);
+        // this will actually spawn two DB queries, which is not optimal.
+        // better would be a single statement to get all the data at once and let
+        // the DB handle the rest, e.g.:
+        // Task::findOrFail($id)->join('users', 'users.id', '=', 'tasks.user_id')->first();
+        $t = Task::findOrFail($id);
+        $u = $t->user;
+        return view('tasks.show', ['task' => $t, 'user' => $u]);
         // dd(Task::find($id));
     }
 
@@ -60,7 +75,8 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        //
+        $t = Task::findOrFail($id);
+        return view('tasks.edit', ['task' => $t]);
     }
 
     /**
@@ -70,19 +86,31 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreTask $request, $id)
     {
-        //
+        $t = Task::findOrFail($id);
+
+        $t->fill($request->validated());
+        $t->save();
+
+        $request->session()->flash('status', 'Task was updated successfully!');
+
+        return redirect()->route('tasks.show', ['task' => $t->id]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+//        $t = Task::findOrFail($id);
+//        $t->delete();
+        Task::destroy($id);
+        $request->session()->flash('status', 'Task was deleted successfully!');
+        return redirect()->route('tasks.index');
     }
 }
