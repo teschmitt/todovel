@@ -13,6 +13,7 @@
                                 {{ session('status') }}
                             </div>
                         @endif
+                            <p><a href="{{ route('tasks.create') }}">+ Add task</a></p>
                             <ul>
                                 @forelse($tasks as $t)
                                     <li>

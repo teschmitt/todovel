@@ -26,7 +26,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        return view('tasks.create');
     }
 
     /**
@@ -37,7 +37,20 @@ class TaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'title' => 'required|max:150',
+            'description' => 'required'
+        ]);
+
+        $task = new Task();
+        $task->title = $request->input('title', 'Task title');
+        $task->description = $request->input('description', 'Task description');
+        $task->user_id = $request->user()->id;
+        $task->save();
+
+        $request->session()->flash('status', 'New task created, good luck Chuck!');
+
+        return redirect()->route('tasks.show', ['task' => $task->id]);
     }
 
     /**
