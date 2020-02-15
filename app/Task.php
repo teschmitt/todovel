@@ -9,6 +9,13 @@ class Task extends Model
 {
     use SoftDeletes;
     protected $table = 'tasks';
+    protected $fillable = [
+        'title',
+        'description',
+        'user_id',
+        'done',
+        'duedate'
+    ];
 
     public function user()
     {

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use App\Http\Requests\StoreTask;
 use App\Task;
 
 class TaskController extends Controller
@@ -35,13 +36,8 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTask $request)
     {
-        $validatedData = $request->validate([
-            'title' => 'required|max:150',
-            'description' => 'required'
-        ]);
-
         $task = new Task();
         $task->title = $request->input('title', 'Task title');
         $task->description = $request->input('description', 'Task description');
@@ -79,7 +75,8 @@ class TaskController extends Controller
      */
     public function edit($id)
     {
-        //
+        $t = Task::findOrFail($id);
+        return view('tasks.edit', ['task' => $t]);
     }
 
     /**
@@ -89,19 +86,31 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreTask $request, $id)
     {
-        //
+        $t = Task::findOrFail($id);
+
+        $t->fill($request->validated());
+        $t->save();
+
+        $request->session()->flash('status', 'Task was updated successfully!');
+
+        return redirect()->route('tasks.show', ['task' => $t->id]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param int $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+//        $t = Task::findOrFail($id);
+//        $t->delete();
+        Task::destroy($id);
+        $request->session()->flash('status', 'Task was deleted successfully!');
+        return redirect()->route('tasks.index');
     }
 }

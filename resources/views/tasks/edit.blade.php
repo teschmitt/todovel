@@ -16,10 +16,14 @@
                             </div>
                         @endif
 
-                        <form method="POST" action="{{ route('tasks.store') }}">
+                        <form method="POST"
+                              action="{{ route('tasks.update', ['task' => $task->id]) }}">
                             @csrf
+                            @method('PUT')
+
                             @include('tasks._form')
-                            <button type="submit">Create</button>
+
+                            <button type="submit">Edit</button>
 
                         </form>
                     </div>

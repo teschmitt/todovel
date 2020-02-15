@@ -17,7 +17,6 @@ Route::get('/', function () {
 
 Auth::routes();
 
-Route::resource("/tasks", 'TaskController')
-    ->only(['index', 'show', 'create', 'store']);
+Route::resource("/tasks", 'TaskController');
 
 Route::get('/home', 'HomeController@index')->name('home');
