@@ -8,11 +8,11 @@
     </div>
 @endif
 
-<p>
+<div class="form-group">
     <label>Title</label>
-    <input type="text" name="title" value="{{ old('title', $task->title ?? null) }}" />
-</p>
-<p>
+    <input type="text" name="title" class="form-control" value="{{ old('title', $task->title ?? null) }}" />
+</div>
+<div class="form-group">
     <label>Description</label>
-    <input type="textfield" name="description" value="{{ old('description', $task->description ?? null) }}" />
-</p>
+    <input type="textfield" class="form-control" name="description" value="{{ old('description', $task->description ?? null) }}" />
+</div>
